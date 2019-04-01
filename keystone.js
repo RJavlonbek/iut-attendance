@@ -27,6 +27,7 @@ keystone.init({
 		helpers: new require('./templates/views/helpers')(),
 		extname: '.hbs',
 	}).engine,
+	'mongo':mongodb+srv://javlonbek:12345rj98@spring2019-kebch.mongodb.net/test?retryWrites=true
 
 	'session': true,
 	'auth': true,

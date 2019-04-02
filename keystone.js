@@ -28,6 +28,7 @@ keystone.init({
 		extname: '.hbs',
 	}).engine,
 	'mongo':'mongodb+srv://javlonbek:12345rj98@spring2019-kebch.mongodb.net/test?retryWrites=true',
+	'cookie secret':'JavlonbekIUT',
 
 	'session': true,
 	'auth': true,

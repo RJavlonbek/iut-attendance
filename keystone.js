@@ -28,6 +28,7 @@ keystone.init({
 		extname: '.hbs',
 	}).engine,
 	'mongo':'mongodb://javlonbek:12345rj98@spring2019-shard-00-00-kebch.mongodb.net:27017,spring2019-shard-00-01-kebch.mongodb.net:27017,spring2019-shard-00-02-kebch.mongodb.net:27017/test?ssl=true&replicaSet=Spring2019-shard-0&authSource=admin&retryWrites=true',
+	'session store':'mongo',
 	'cookie secret':'JavlonbekIUT',
 
 	'session': true,

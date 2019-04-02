@@ -11,7 +11,6 @@
     "handlebars": "4.0.6",
     "dotenv": "4.0.0",
     "async": "2.1.4"
-    //"face-recognition":"0.9.4"
   },
   "devDependencies": {
     "eslint": "3.15.0",

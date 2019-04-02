@@ -43,7 +43,7 @@ keystone.import('models');
 // for each request) should be added to ./routes/middleware.js
 keystone.set('locals', {
 	_: require('lodash'),
-	env: keystone.get('env'),
+	env: 'development',
 	utils: keystone.utils,
 	editable: keystone.content.editable,
 });

@@ -9,7 +9,9 @@ var handlebars = require('express-handlebars');
 // Initialise Keystone with your project's configuration.
 // See http://keystonejs.com/guide/config for available options
 // and documentation.
+//var MongoStore=require('connect-mongodb-session')(session);
 
+var mongoDBUrl='mongodb://javlonbek:12345rj98@spring2019-shard-00-00-kebch.mongodb.net:27017,spring2019-shard-00-01-kebch.mongodb.net:27017,spring2019-shard-00-02-kebch.mongodb.net:27017/test?ssl=true&replicaSet=Spring2019-shard-0&authSource=admin&retryWrites=true'
 keystone.init({
 	'name': 'IUT',
 	'brand': 'IUT',
@@ -27,10 +29,15 @@ keystone.init({
 		helpers: new require('./templates/views/helpers')(),
 		extname: '.hbs',
 	}).engine,
-	'mongo':'mongodb://javlonbek:12345rj98@spring2019-shard-00-00-kebch.mongodb.net:27017,spring2019-shard-00-01-kebch.mongodb.net:27017,spring2019-shard-00-02-kebch.mongodb.net:27017/test?ssl=true&replicaSet=Spring2019-shard-0&authSource=admin&retryWrites=true',
+	'mongo':mongoDBUrl,
 	'cookie secret':'JavlonbekIUT',
 	'session':true,
-	'session store':'mongo',
+	'session store':function(session){
+		return new require('connect-mongodb-session')(session)({
+			uri:mongoDBUrl,
+  			collection:'mySessions'
+		});
+	},
 	'auth': true,
 	'user model': 'User',
 });

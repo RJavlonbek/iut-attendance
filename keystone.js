@@ -33,17 +33,18 @@ keystone.init({
 	'mongo':mongoDBUrl,
 	'cookie secret':'JavlonbekIUT',
 	'session':true,
-	'session store':function(session){
-		var MongoStore=require('connect-mongodb-session')(session);
-		var store = new MongoStore({
-	 		uri:mongoDBUrl,
-  			collection:'mySessions'
-		});
-                store.on('error', function(error) {
-                    console.log("Error on connecting to mongostore:",error);
-                });
-		return store;
-	},
+	'session store':'mongo',
+// 	'session store':function(session){
+// 		var MongoStore=require('connect-mongodb-session')(session);
+// 		var store = new MongoStore({
+// 	 		uri:mongoDBUrl,
+//   			collection:'mySessions'
+// 		});
+//                 store.on('error', function(error) {
+//                     console.log("Error on connecting to mongostore:",error);
+//                 });
+// 		return store;
+// 	},
 	'auth': true,
 	'user model': 'User',
 });

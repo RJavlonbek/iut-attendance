@@ -33,7 +33,8 @@ keystone.init({
 	'cookie secret':'JavlonbekIUT',
 	'session':true,
 	'session store':function(session){
-		return new require('connect-mongodb-session')(session)({
+		var MongoStore=require('connect-mongodb-session')(session);
+		return new MongoStore({
 			uri:mongoDBUrl,
   			collection:'mySessions'
 		});

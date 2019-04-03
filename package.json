@@ -12,6 +12,7 @@
     "dotenv": "4.0.0",
     "async": "2.1.4",
     "connect-mongodb-session": "^2.0.4",
+    "connect-mongo":"^2.0.3",
     "express-session": "^1.15.6"
   },
   "devDependencies": {

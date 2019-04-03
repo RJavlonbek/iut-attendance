@@ -78,5 +78,5 @@ keystone.set('nav', {
 //require('./store-faces');
 
 
-
+console.log('keystone starting');
 keystone.start();

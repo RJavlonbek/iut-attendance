@@ -7,9 +7,16 @@
  * module.exports = function(done) { ... }
  */
 
+console.log('creating admin');
+
 exports.create = {
 	User: [
-		{ 'name.first': 'Admin', 'name.last': 'User', 'email': 'javlonarjei042@gmail.com', 'password': '12345', 'isAdmin': true },
+		{ 
+			name: 'Admin', 
+			email: 'javlonarjei042@gmail.com', 
+			password: '12345', 
+			isAdmin: true
+		}
 	],
 };
 

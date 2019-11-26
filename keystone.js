@@ -11,8 +11,10 @@ var handlebars = require('express-handlebars');
 // and documentation.
 //var MongoStore=require('connect-mongodb-session')(session);
 
-var mongoDBUrl='mongodb://keystone_user:12345rj98@iut-shard-00-00-myyel.mongodb.net:27017,iut-shard-00-01-myyel.mongodb.net:27017,iut-shard-00-02-myyel.mongodb.net:27017/test?ssl=true&replicaSet=iut-shard-0&authSource=admin&retryWrites=true';
+//var mongoDBUrl='mongodb://keystone_user:12345rj98@iut-shard-00-00-myyel.mongodb.net:27017,iut-shard-00-01-myyel.mongodb.net:27017,iut-shard-00-02-myyel.mongodb.net:27017/spring2019?ssl=true&replicaSet=iut-shard-0&authSource=admin&retryWrites=true';
+var mongoDBUrl='mongodb://javlonbek:12345rj98@fintech-shard-00-00-ahsxv.mongodb.net:27017,fintech-shard-00-01-ahsxv.mongodb.net:27017,fintech-shard-00-02-ahsxv.mongodb.net:27017/spring2019?ssl=true&replicaSet=fintech-shard-0&authSource=admin&retryWrites=true&w=majority';
 //mongoDBUrl='mongodb+srv://javlonbek:12345rj98@spring2019-kebch.mongodb.net/test?retryWrites=true';
+//var mongoDBUrl='mongodb+srv://javlonbek:12345rj98@fintech-ahsxv.mongodb.net/spring2019?retryWrites=true&w=majority';
 keystone.init({
 	'name': 'IUT',
 	'brand': 'IUT',
@@ -47,6 +49,7 @@ keystone.init({
 // 	},
 	'auth': true,
 	'user model': 'User',
+	'auto update':true
 });
 
 // Load your project's Models

@@ -2,7 +2,7 @@ var keystone=require('keystone');
 var Types=keystone.Field.Types;
 
 var Student=new keystone.List('Student',{
-	map: { name: 'studentId' },
+	map: { name: 'studentId',label:'asdasd' },
 	label: 'Student id (u*******)',
 	autokey: { path: 'slug', from: 'firstname lastname', unique: true }
 });
@@ -38,5 +38,5 @@ Student.add({
 	}
 });
 
-Student.defaultColumns='id, group, firstname';
+Student.defaultColumns='studentId, firstname, lastname, group';
 Student.register();

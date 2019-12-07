@@ -123,29 +123,36 @@ var teacherAPI={
 		const teacherId=req.params.teacherId||'';
 		console.log('getting timetable for instructor '+teacherId);
 		Teacher.findOne({teacherId},'_id',(err, teacher)=>{
-			Section.find({
-				teacher:teacher._id
-			},'number lectureOne lectureTwo').populate({
-				path:'groups',
-				select:['title']
-			}).populate({
-				path:'course',
-				select:['title']
-			}).exec((err,sections)=>{
-				if(err) return next(err);
-				let lectures=[];
-				sections=sections.map((section, index)=>{
-					return {
-						number: section.number,
-						groups: section.groups,
-						course: section.course,
-						lectures:[section.lectureOne, section.lectureTwo]
-					}
+			if(err) return next(err);
+			if(teacher && teacher._id){
+				Section.find({
+					teacher:teacher._id
+				},'number lectureOne lectureTwo').populate({
+					path:'groups',
+					select:['title']
+				}).populate({
+					path:'course',
+					select:['title']
+				}).exec((err,sections)=>{
+					if(err) return next(err);
+					let lectures=[];
+					sections=sections.map((section, index)=>{
+						return {
+							number: section.number,
+							groups: section.groups,
+							course: section.course,
+							lectures:[section.lectureOne, section.lectureTwo]
+						}
+					});
+					res.json(sections);
 				});
-				res.json(sections);
-			});
-		})
-		
+			}else{
+				res.json({
+					result:'error',
+					message:'teacher was not found for given id '+teacherId
+				});
+			}
+		});
 	}
 }
 

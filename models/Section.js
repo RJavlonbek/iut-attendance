@@ -91,10 +91,10 @@ Section.add({
 		time:{
 			label:'Starting time of second lecture (hh:mm)',
 			type:String,
-			dependsOn:{$gte:{lecturesPerWeek:1}}
+			dependsOn:{$gte:{lecturesPerWeek:2}}
 		}
 	}
 });
 
-Section.defaultColumns='number';
+Section.defaultColumns='number course teacher';
 Section.register();

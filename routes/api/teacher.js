@@ -30,7 +30,7 @@ var teacherAPI={
 					match:{_id:teacher._id}
 				}).exec(function(err,section){
 					if(err) return next(err);
-					if(section._id){
+					if(section && section._id){
 						console.log('section found '+section.number);
 						Lecture.count({section:section._id,teacher:section.teacher._id},function(err,lecturesCount){ // counting lectures
 							if(err) return next(err);
@@ -118,6 +118,34 @@ var teacherAPI={
 				});
 			}
 		});
+	},
+	getTimetable:function(req, res, next){
+		const teacherId=req.params.teacherId||'';
+		console.log('getting timetable for instructor '+teacherId);
+		Teacher.findOne({teacherId},'_id',(err, teacher)=>{
+			Section.find({
+				teacher:teacher._id
+			},'number lectureOne lectureTwo').populate({
+				path:'groups',
+				select:['title']
+			}).populate({
+				path:'course',
+				select:['title']
+			}).exec((err,sections)=>{
+				if(err) return next(err);
+				let lectures=[];
+				sections=sections.map((section, index)=>{
+					return {
+						number: section.number,
+						groups: section.groups,
+						course: section.course,
+						lectures:[section.lectureOne, section.lectureTwo]
+					}
+				});
+				res.json(sections);
+			});
+		})
+		
 	}
 }
 

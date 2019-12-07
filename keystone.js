@@ -77,7 +77,8 @@ keystone.set('nav', {
 	groups: 'groups',
 	courses: 'courses',
 	lectures: 'lectures',
-	students: 'students'
+	students: 'students',
+	teachers: 'teachers'
 });
 
 // Start Keystone to connect to your database and initialise the web server

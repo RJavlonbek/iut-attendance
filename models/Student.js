@@ -3,7 +3,7 @@ var Types=keystone.Field.Types;
 
 var Student=new keystone.List('Student',{
 	map: { name: 'studentId',label:'asdasd' },
-	label: 'Student id (u*******)',
+	label: 'Student',
 	autokey: { path: 'slug', from: 'firstname lastname', unique: true }
 });
 
@@ -19,8 +19,7 @@ var myStorage = new keystone.Storage({
 Student.add({
 	studentId:{
 		type:String,
-		required:true,
-		default:'not_set'
+		required:true
 	},
 	group:{
 		type:Types.Relationship,
@@ -38,5 +37,5 @@ Student.add({
 	}
 });
 
-Student.defaultColumns='studentId, firstname, lastname, group';
+Student.defaultColumns='studentId, firstname lastname, group';
 Student.register();

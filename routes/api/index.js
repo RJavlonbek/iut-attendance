@@ -11,6 +11,7 @@ APIRouter.get('/',function(req,res,next){
 
 //teacher api
 APIRouter.get('/teacher/:teacherId/attendance',teacherAPI.startAttendance);
+APIRouter.get('/teacher/:teacherId/timetable', teacherAPI.getTimetable);
 APIRouter.post('/teacher/login',teacherAPI.login);
 
 //student api

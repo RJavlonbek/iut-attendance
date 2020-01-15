@@ -33,9 +33,11 @@ Teacher.add({
 		type:String
 	},
 	password:{
-		type:Types.Password
+		type:Types.Password,
+		min:4,
+		rejectCommon:false
 	}
 });
 
-Teacher.defaultColumns='id, group, firstname';
+Teacher.defaultColumns='teacherId, lastname, firstname';
 Teacher.register();

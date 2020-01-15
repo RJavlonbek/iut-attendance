@@ -2,7 +2,7 @@ var keystone=require('keystone');
 var Types=keystone.Field.Types;
 
 var Student=new keystone.List('Student',{
-	map: { name: 'studentId',label:'asdasd' },
+	map: { name: 'studentId'},
 	label: 'Student',
 	autokey: { path: 'slug', from: 'firstname lastname', unique: true }
 });
@@ -30,10 +30,15 @@ Student.add({
 		storage:myStorage
 	},
 	firstname:{
-		type:String,
+		type:String
 	},
 	lastname:{
 		type:String,
+	},
+	password:{
+		type:Types.Password,
+		min:4,
+		rejectCommon:false
 	}
 });
 

@@ -13,6 +13,7 @@ APIRouter.get('/',function(req,res,next){
 APIRouter.get('/teacher/:teacherId/attendance',teacherAPI.startAttendance);
 APIRouter.get('/teacher/:teacherId/timetable', teacherAPI.getTimetable);
 APIRouter.post('/teacher/login',teacherAPI.login);
+APIRouter.post('/teacher/file-upload', teacherAPI.fileUpload);
 
 //student api
 APIRouter.post('/student/:studentId/attendance',studentAPI.checkAttendance);

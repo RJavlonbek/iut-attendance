@@ -19,3 +19,48 @@
 		</p>
 	</div>
 </div>
+
+<div class="container">
+	<h2>API documentation</h2>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>URL</th>
+				<th>Method</th>
+				<th>Data</th>
+				<th>Response</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>/api/teacher/login</td>
+				<td>POST</td>
+				<td>{teacherId:'u123456', password:'*****'}</td>
+				<td>{status, message, user:{_id, teacherId, firstname, lastname}, userType:'teacher || student'}</td>
+				<td>login</td>
+			</tr>
+			<tr>
+				<td>/api/teacher/:teacherId/timetable</td>
+				<td>GET</td>
+				<td></td>
+				<td>o'sha mashxur response ;)</td>
+				<td>Timetable for teacher</td>
+			</tr>
+			<tr>
+				<td>/api/survey/start</td>
+				<td>POST</td>
+				<td>{title:String, content:String, author:ObjectId}</td>
+				<td>{status, message, survey:{_id, title, content, student||teacher:ObjectId, createdAt}}</td>
+				<td>Create new survey and returns survey data</td>
+			</tr>
+			<tr>
+				<td>/api/survey/find</td>
+				<td>GET</td>
+				<td>-</td>
+				<td>[ {_id, title, content, createdAt, student||teacher:{_id, firstname, lastname, studentId||teacherId}} ]</td>
+				<td>Returns the list of surveys with their author informations</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

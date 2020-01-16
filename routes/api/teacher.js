@@ -117,12 +117,13 @@ var teacherAPI={
 		}, function(err, results){
 			if(err) return next(err);
 			let response={};
+			let user={};
 			if(results.teacher && results.teacher._id){
 				response.userType='teacher';
-				response.user=results.teacher
+				user=results.teacher;
 			}else if(results.student && results.student._id){
 				response.userType='student';
-				response.user=results.student;
+				user=results.student;
 			}else{
 				res.json({
 					status:'error',
@@ -130,7 +131,14 @@ var teacherAPI={
 				});
 			}
 
-			response.user._.password.compare(b.password, function(err,match){
+			response.user={
+				_id:user._id,
+				teacherId: user.studentId,
+				firstname: user.firstname,
+				lastname: user.lastname
+			}
+
+			user._.password.compare(b.password, function(err,match){
 				if(err) return next(err);
 				if(match){
 					res.json({
@@ -184,39 +192,39 @@ var teacherAPI={
 	},
 	fileUpload:function(req, res, next){
 		// console.log('sending post request to mis');
-	 //  	// Build the post string from an object
-	 //  	var post_data = querystring.stringify({
-	 //      	'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
-	 //      	'output_format': 'json',
-	 //      	'output_info': 'compiled_code',
-	 //        'warning_level' : 'QUIET',
-	 //        'js_code' : 'codestring'
-	 //  	});
+		//  	// Build the post string from an object
+		//  	var post_data = querystring.stringify({
+		//      	'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
+		//      	'output_format': 'json',
+		//      	'output_info': 'compiled_code',
+		//        'warning_level' : 'QUIET',
+		//        'js_code' : 'codestring'
+		//  	});
 
-	 //  	// An object of options to indicate where to post to
-	 //  	var post_options = {
-	 //      	host: 'iut-files.mis.uz',
-	 //      	port: '80',
-	 //     	path: '/file-upload.php',
-	 //      	method: 'POST',
-	 //      	headers: {
-	 //          	'Content-Type': 'application/x-www-form-urlencoded',
-	 //          	'Content-Length': Buffer.byteLength(post_data)
-	 //      	}
-	 //  	};
+		//  	// An object of options to indicate where to post to
+		//  	var post_options = {
+		//      	host: 'iut-files.mis.uz',
+		//      	port: '80',
+		//     	path: '/file-upload.php',
+		 //      	method: 'POST',
+		 //      	headers: {
+		 //          	'Content-Type': 'application/x-www-form-urlencoded',
+		 //          	'Content-Length': Buffer.byteLength(post_data)
+		 //      	}
+		 //  	};
 
-	 //  	// Set up the request
-	 //  	var post_req = http.request(post_options, function(resp) {
-	 //    	resp.setEncoding('utf8');
-	 //      	resp.on('data', function (chunk) {
-	 //          	console.log('Response: ' + chunk);
-	 //          	res.end();
-	 //      	});
-	 //  	});
+		 //  	// Set up the request
+		 //  	var post_req = http.request(post_options, function(resp) {
+		 //    	resp.setEncoding('utf8');
+		 //      	resp.on('data', function (chunk) {
+		 //          	console.log('Response: ' + chunk);
+		 //          	res.end();
+		 //      	});
+		 //  	});
 
-	 //  	// post the data
-	 //  	post_req.write(post_data);
-	 //  	post_req.end();
+		 //  	// post the data
+		 //  	post_req.write(post_data);
+		//  	post_req.end();
 		let b=req.body;
 		if(b && b.teacherId && b.filename){
 			let f = new File({

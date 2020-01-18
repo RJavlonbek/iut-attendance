@@ -97,6 +97,7 @@ var teacherAPI={
 	},
 	login:function(req,res,next){
 		var b=req.body;
+		console.log(b);
 		async.parallel({
 			teacher:function(cb){
 				Teacher.findOne({
@@ -138,21 +139,23 @@ var teacherAPI={
 				lastname: user.lastname
 			}
 
-			user._.password.compare(b.password, function(err,match){
-				if(err) return next(err);
-				if(match){
-					res.json({
-						...response,
-						status:'success',
-						message:'signed in'
-					});
-				}else{
-					res.json({
-						status:'error',
-						message:'incorrect credentials'
-					});
-				}
-			});
+			if(user._){
+				user._.password.compare(b.password, function(err,match){
+					if(err) return next(err);
+					if(match){
+						res.json({
+							...response,
+							status:'success',
+							message:'signed in'
+						});
+					}else{
+						res.json({
+							status:'error',
+							message:'incorrect credentials'
+						});
+					}
+				});
+			}
 		});
 	},
 	getTimetable:function(req, res, next){

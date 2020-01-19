@@ -78,7 +78,6 @@ keystone.set('nav', {
 	sections: 'sections',
 	groups: 'groups',
 	courses: 'courses',
-	lectures: 'lectures',
 	students: 'students',
 	teachers: 'teachers'
 });

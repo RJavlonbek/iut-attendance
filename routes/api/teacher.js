@@ -16,7 +16,7 @@ var teacherAPI={
 		console.log('....starting attendance');
 		Teacher.findOne({teacherId:teacherId},function(err,teacher){
 			if(err) return next(err);
-			if(!teacher){
+			if(!(teacher && teacher._id)){
 				res.json({
 					status:'error',
 					message:'Teacher not found ('+teacherId+')'

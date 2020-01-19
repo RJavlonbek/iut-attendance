@@ -4,6 +4,7 @@ var APIRouter=keystone.createRouter();
 var teacherAPI=require('./teacher');
 var studentAPI=require('./student');
 const surveyAPI=require('./survey');
+const lectureAPI=require('./lecture');
 
 APIRouter.get('/',function(req,res,next){
 	res.send('hello world');
@@ -17,6 +18,9 @@ APIRouter.post('/teacher/file-upload', teacherAPI.fileUpload);
 
 //student api
 APIRouter.post('/student/:studentId/attendance',studentAPI.checkAttendance);
+
+// lecture && attendance
+APIRouter.post('/lecture/attendance', lectureAPI.attendance);
 
 // survey api
 APIRouter.post('/survey/start', surveyAPI.start);

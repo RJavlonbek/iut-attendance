@@ -17,6 +17,11 @@ Lecture.add({
 			default:0
 		}
 	},
+	attendedStudents:{
+		type:Types.Relationship,
+		ref:'Student',
+		many:true
+	},
 	teacher:{
 		type:Types.Relationship,
 		ref:'Teacher'

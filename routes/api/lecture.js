@@ -23,12 +23,18 @@ const lectureAPI={
 		}, (err, students)=>{
 			if(err) return next(err);
 			if(!(students && students.length)){
-				res.end();
+				return res.json({
+					status:'error',
+					message:'no students found'
+				});
 			}
 
 			Lecture.findById(b.lectureId, (err, lecture)=>{
 				if(!(lecture && lecture._id)){
-					res.end();
+					return res.json({
+						status:'error',
+						message:'lecture not found'
+					});
 				}
 
 				lecture.attendedStudents=students.map((s, i)=>s._id);

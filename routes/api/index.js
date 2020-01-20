@@ -21,6 +21,7 @@ APIRouter.post('/student/:studentId/attendance',studentAPI.checkAttendance);
 
 // lecture && attendance
 APIRouter.post('/lecture/attendance', lectureAPI.attendance);
+APIRouter.get('/lecture/students', lectureAPI.getAttendedStudents);
 
 // survey api
 APIRouter.post('/survey/start', surveyAPI.start);

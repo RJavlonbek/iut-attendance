@@ -58,9 +58,57 @@ const surveyAPI={
 		}).populate({
 			path:'student',
 			select:['studentId', 'firstname', 'lastname']
+		}).populate({
+			path:'votedUp',
+			select:['studentId', 'firstname', 'lastname']
+		}).populate({
+			path:'votedDown',
+			select:['studentId', 'firstname', 'lastname']
 		}).exec((err, surveys)=>{
 			if(err) return next(err);
 			res.json(surveys);
+		});
+	},
+	vote:(req, res, next)=>{
+		const {surveyId, studentId, vote} = req.body || {};
+		if(!(surveyId && studentId && vote)){
+			return res.json({
+				status:'error',
+				message:'lack of data'
+			});
+		}
+
+		let update={}
+		if(vote=='up'){
+			update={
+				$pull:{votedDown:studentId},
+				$addToSet:{votedUp:studentId}
+			}
+		}else if(vote=='down'){
+			update={
+				$pull:{votedUp:studentId},
+				$addToSet:{votedDown:studentId}
+			}
+		}else{
+			return res.json({
+				status:'error',
+				message:'invalid vote action'
+			});
+		}
+		
+		Survey.findByIdAndUpdate(surveyId, update, (err, survey)=>{
+			if(err) return next();
+			if(!(survey && survey._id)){
+				return res.json({
+					status:'error',
+					message:'survey not found'
+				});
+			}
+
+			res.json({
+				status:'success',
+				message:'done'
+			});
 		});
 	}
 }

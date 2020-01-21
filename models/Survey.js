@@ -21,6 +21,16 @@ SurveySchema.add({
 	createdAt:{
 		type:Types.Datetime,
 		default: Date.now
+	},
+	votedUp:{
+		type:Types.Relationship,
+		ref:'Student',
+		many:true
+	},
+	votedDown:{
+		type:Types.Relationship,
+		ref:'Student',
+		many:true
 	}
 });
 

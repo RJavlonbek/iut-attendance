@@ -26,5 +26,6 @@ APIRouter.get('/lecture/students', lectureAPI.getAttendedStudents);
 // survey api
 APIRouter.post('/survey/start', surveyAPI.start);
 APIRouter.get('/survey/find', surveyAPI.find);
+APIRouter.post('/survey/vote', surveyAPI.vote);
 
 module.exports=APIRouter;

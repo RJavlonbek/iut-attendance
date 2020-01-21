@@ -51,17 +51,18 @@ const lectureAPI={
 	getAttendedStudents:(req, res, next)=>{
 		const {lectureId}=req.query;
 		if(!lectureId){
-			res.json({
+			return res.json({
 				status:'error',
 				message:'lack of data'
 			});
 		}
 
 		Lecture.findById(lectureId).populate({
-			path:'attendedStudents'
+			path:'attendedStudents',
+			select:['studentId', 'firstname', 'lastname']
 		}).exec((err, lecture)=>{
 			if(!(lecture && lecture._id)){
-				res.json({
+				return res.json({
 					status:'error',
 					message:'lecture not found'
 				});

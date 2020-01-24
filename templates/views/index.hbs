@@ -1,26 +1,23 @@
 {{!< default}}
 <div class="container">
-	<div class="jumbotron"><img src="/images/logo.svg" width="160">
-		<h1>Welcome</h1>
-		<p>This is your new <a href='http://keystonejs.com' target='_blank'>KeystoneJS</a> website.</p>
-		<p>
-			It includes the latest versions of
-			<a href='http://getbootstrap.com/' target='_blank'>Bootstrap</a>
-			and <a href='http://www.jquery.com/' target='_blank'>jQuery</a>.
-		</p>
-		<p>Visit the <a href='http://keystonejs.com/guide' target='_blank'>Getting Started</a> guide to learn how to customise it.</p>
+	<div class="jumbotron">
+		<h1>IUT Attendance Application</h1>
+		<p>This is the backend part of our application, which was developed for improving attendace methods in higher education systems</p>
+		<p></p>
+		<p>The application is based on latest technologies, including NodeJS, MongoDB, FaceAPI & TensorflowC++</p>
 		<hr>
 		<p>We have created a default Admin user for you with the email <strong>javlonarjei042@gmail.com</strong> and the password <strong>12345</strong>.</p>
 		<p><a href="/keystone/signin" style="margin-right: 10px" class="btn btn-lg btn-primary">Sign in</a> to use the Admin UI.</p>
 		<hr>
 		<p>
-			Remember to <a href='https://github.com/keystonejs/keystone' target='_blank'>Star KeystoneJS on GitHub</a> and
-			<a href='https://twitter.com/keystonejs' target='_blank'>follow @keystonejs</a> on twitter for updates.
+			If you want to support or follow for updates, contact <a href="">@javlonbekrakhimberdiev</a> on telegram.
 		</p>
 	</div>
 </div>
 
 <div class="container">
+	<div class="row">
+	<div class="col-12">
 	<h2>API documentation</h2>
 	<table class="table table-bordered">
 		<thead>
@@ -37,7 +34,19 @@
 				<td>/api/teacher/login</td>
 				<td>POST</td>
 				<td>{teacherId:'u123456', password:'*****'}</td>
-				<td>{status, message, user:{_id, teacherId, firstname, lastname}, userType:'teacher || student'}</td>
+				<td><pre>
+{
+	status, 
+	message, 
+	user:{
+		_id, 
+		teacherId, 
+		firstname, 
+		lastname
+	}, 
+	userType:'teacher || student'
+}
+				</pre></td>
 				<td>login</td>
 			</tr>
 			<tr>
@@ -46,6 +55,18 @@
 				<td></td>
 				<td>o'sha mashxur response ;)</td>
 				<td>Timetable for teacher</td>
+			</tr>
+			<tr>
+				<td>/api/teacher/:teacherId/courses</td>
+				<td>GET</td>
+				<td>-</td>
+				<td><pre>
+[{
+	_id,
+	title
+}]
+				</pre></td>
+				<td>Get list of courses that are taught by the teacher</td>
 			</tr>
 			<tr>
 				<td>/api/teacher/:teacherId/attendance</td>
@@ -134,6 +155,70 @@
 				</pre></td>
 				<td>API for vote up/down for a survey</td>
 			</tr>
+			<tr>
+				<td>/api/student/find</td>
+				<td>GET</td>
+				<td><pre>
+{
+	groupId: ObjectId (optional)
+}
+				</pre></td>
+				<td><pre>
+[{
+	_id,
+	studentId,
+	firstname,
+	lastname,
+	group:{
+		_id,
+		title:'CSE 17-01'
+	}
+}]
+				</pre></td>
+				<td>Get list of students according to given filters</td>
+			</tr>
+
+			<tr>
+				<td>/api/group/find</td>
+				<td>GET</td>
+				<td>-</td>
+				<td><pre>
+[{
+	_id,
+	title: 'CSE 17-01'
+}]
+				</pre></td>
+				<td>Get list of groups</td>
+			</tr>
 		</tbody>
 	</table>
+	</div>
+	<div class="col-12">
+		<h4>API of https://iut-faceapi.herokuapp.com</h4>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>URL</th>
+					<th>Method</th>
+					<th>Data</th>
+					<th>Response</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>/detect-faces</td>
+					<td>POST</td>
+					<td><pre>
+{
+	photo:File(image)
+}
+					</pre></td>
+					<td>Image/jpeg</td>
+					<td>Detects all faces on image and draws a box on each face. Estimates face expression, gender, age and writes this informations next to each face box. Returns new drawn picture</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</div>
 </div>

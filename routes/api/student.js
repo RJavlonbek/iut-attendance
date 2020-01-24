@@ -18,6 +18,23 @@ var studentAPI={
 				}
 			}
 		});
+	},
+	findStudents:(req, res, next)=>{
+		let query={};
+		if(req.query.groupId){
+			query={
+				...query,
+				group:req.query.groupId
+			}
+		}
+
+		Student.find(query, 'studentId firstname lastname').populate({
+			path:'group',
+			select:['title']
+		}).exec((err, students)=>{
+			if(err) return next(err);
+			res.json(students);
+		});
 	}
 }
 

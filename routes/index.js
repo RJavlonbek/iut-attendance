@@ -48,7 +48,10 @@ exports = module.exports = function (app) {
 		res.locals.message = err.message;
 		res.locals.error = keystone.get('env') === 'development' ? err : {};
 		console.log('Error: ',err.message);
-		res.end();
+		return res.json({
+			status:'error',
+			message:err.message
+		});
 	});
 
 };

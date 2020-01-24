@@ -8,6 +8,7 @@ var Teacher=keystone.list('Teacher').model;
 var Lecture=keystone.list('Lecture').model;
 var Student=keystone.list('Student').model;
 var File   =keystone.list('File').model;
+var Course =keystone.list('Course').model;
 
 var teacherAPI={
 	startAttendance:function(req,res,next){ // sends current lecture id as a token
@@ -191,6 +192,14 @@ var teacherAPI={
 			}
 		});
 	},
+	findCourses:(req, res, next)=>{
+		const teacherId=req.params.teacherId||'';
+
+		Course.find({}, 'title', (err, courses)=>{
+			if(err) return next(err);
+			return res.json(courses);
+		});
+	},
 	fileUpload:function(req, res, next){
 		// console.log('sending post request to mis');
 		//  	// Build the post string from an object
@@ -239,6 +248,36 @@ var teacherAPI={
 				result:'error',
 				message:'all data is not provided'
 			});
+		}
+
+		function attendance(data){
+			console.log('requesting to iut-attendance...');
+			data = JSON.stringify(data);
+			const options = {
+			  	hostname: 'iut-attendance.herokuapp.com',
+			  	port: 443,
+			  	path: '/api/lecture/attendance',
+			  	method: 'POST',
+			  	headers: {
+			    	'Content-Type': 'application/json',
+			    	'Content-Length': data.length
+			  	}
+			}
+			const req = https.request(options, res => {
+			  	console.log(`statusCode: ${res.statusCode}`)
+
+			  	res.on('data', d => {
+			  		console.log('request to iut-attendance finished...');
+			    	process.stdout.write(d)
+			  	});
+			});
+
+			req.on('error', error => {
+			  	console.error(error)
+			});
+
+			req.write(data)
+			req.end();
 		}
 	}
 }

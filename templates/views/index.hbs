@@ -69,6 +69,22 @@
 				<td>Get list of courses that are taught by the teacher</td>
 			</tr>
 			<tr>
+				<td>/api/teacher/:teacherId/sections</td>
+				<td>GET</td>
+				<td>-</td>
+				<td><pre>
+[{
+	_id,
+	number: '001',
+	course: {
+		_id,
+		title: 'Introduction to Database'
+	}
+}]
+				</pre></td>
+				<td>Get list of sections that are taught by the given teacher</td>
+			</tr>
+			<tr>
 				<td>/api/teacher/:teacherId/attendance</td>
 				<td>GET</td>
 				<td></td>
@@ -84,19 +100,30 @@
 				</pre></td>
 				<td>STEP-1 of attendance; starts a new lecture which should be occured on current time; and returns a list of students those are supposed to attend this lecture; and id of new lecture</td>
 			</tr>
-			<tr>
+<!-- 			<tr>
 				<td>/api/lecture/attendance</td>
 				<td>POST</td>
 				<td>{data: [{_label:'u1710005', _distance:0.43}], lectureId: ObjectId}</td>
 				<td>{status, message}</td>
 				<td>THIS API IS REQUESTED BY ONLY FACE_API SERVER, otherwise you don't need it (after 2-step)</td>
-			</tr>
+			</tr> -->
 			<tr>
 				<td>/api/lecture/students</td>
 				<td>GET</td>
 				<td>{lectureId:ObjectId}</td>
-				<td>{students: [{_id, studentId, firstname, lastname}], status, message}</td>
-				<td>STEP-3 of attendance; Gets the list of students attended to given lecture</td>
+				<td><pre>
+{
+	students: [{
+		_id, 
+		studentId, 
+		firstname, 
+		lastname
+	}], 
+	status, 
+	message
+}
+				</pre></td>
+				<td>Gets the list of students who attended to given lecture</td>
 			</tr>
 			<tr>
 				<td>/api/survey/start</td>
@@ -181,7 +208,11 @@
 			<tr>
 				<td>/api/group/find</td>
 				<td>GET</td>
-				<td>-</td>
+				<td><pre>
+{
+	teacherId: ObjectId (optional)
+}
+				</pre></td>
 				<td><pre>
 [{
 	_id,
@@ -216,6 +247,30 @@
 					</pre></td>
 					<td>Image/jpeg</td>
 					<td>Detects all faces on image and draws a box on each face. Estimates face expression, gender, age and writes this informations next to each face box. Returns new drawn picture</td>
+				</tr>
+				<tr>
+					<td>/attendance</td>
+					<td>POST</td>
+					<td><pre>
+{
+	photo: File(image),
+	lectureId: ObjectId
+}
+					</pre></td>
+					<td><pre>
+{
+	photo: Buffer,
+	students:[{
+		_id,
+		studentId,
+		firstname,
+		lastname
+	}],
+	status,
+	message
+}
+					</pre></td>
+					<td>2-STEP of attendance (lasts step). Detects all faces from given picture, recognizes all faces according to student faces. Marks them attended for given lecture. Draws boxes on each face and writes studentId's on them, and returns ready picture as buffer</td>
 				</tr>
 			</tbody>
 		</table>

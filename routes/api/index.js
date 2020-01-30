@@ -17,6 +17,8 @@ APIRouter.get('/teacher/:teacherId/timetable', teacherAPI.getTimetable);
 APIRouter.post('/teacher/login',teacherAPI.login);
 APIRouter.post('/teacher/file-upload', teacherAPI.fileUpload);
 APIRouter.get('/teacher/:teacherId/courses', teacherAPI.findCourses);
+APIRouter.get('/teacher/:teacherId/sections', teacherAPI.findSections);
+
 //student api
 APIRouter.post('/student/:studentId/attendance',studentAPI.checkAttendance);
 APIRouter.get('/student/find', studentAPI.findStudents);

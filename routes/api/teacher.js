@@ -200,6 +200,20 @@ var teacherAPI={
 			return res.json(courses);
 		});
 	},
+	findSections:(req, res, next)=>{
+		const teacherId=req.params.teacherId||'';
+
+		Teacher.findOne({teacherId}, (err, teacher)=>{
+			Section.find({teacher: teacher._id}, 'number').populate({
+				path:'course',
+				select:'title'
+			}).exec((err, sections)=>{
+				if(err) return next(err);
+				return res.json(sections);
+			});
+		})
+		
+	},
 	fileUpload:function(req, res, next){
 		// console.log('sending post request to mis');
 		//  	// Build the post string from an object

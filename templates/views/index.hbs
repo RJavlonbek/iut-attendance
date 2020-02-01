@@ -78,7 +78,7 @@
 	number: '001',
 	course: {
 		_id,
-		title: 'Introduction to Database'
+		title: 'Int to Database'
 	}
 }]
 				</pre></td>
@@ -99,6 +99,51 @@
 }
 				</pre></td>
 				<td>STEP-1 of attendance; starts a new lecture which should be occured on current time; and returns a list of students those are supposed to attend this lecture; and id of new lecture</td>
+			</tr>
+			<tr>
+				<td>/api/teacher/:teacherId/file-upload</td>
+				<td>POST</td>
+				<td>{file: File}</td>
+				<td><pre>
+{
+	status,
+	message,
+	filename: "{ObjectID}.{extension}"
+}
+				</pre></td>
+				<td>STEP 1 of FILE UPLOADING; stores file informations and returns new filename</td>
+			</tr>
+			<tr>
+				<td>https://iut-files.mis.uz/file-upload.php</td>
+				<td>POST</td>
+				<td><pre>
+{
+	file: File,
+	filename: "{ObjectID}.{extension}",
+	app: "iut-attendance"
+}
+				</pre></td>
+				<td><pre>
+{
+	status,
+	message,
+	url: "Url of uploaded file"
+}
+				</pre></td>
+				<td>STEP 2 of FILE UPLOADING; uploads file to php server, and returns url of uploaded file; Filename field is taken from STEP-1</td>
+			</tr>
+			<tr>
+				<td>/api/teacher/:teacherId/files</td>
+				<td>GET</td>
+				<td>-</td>
+				<td><pre>
+[{
+	_id,
+	name: "Original name",
+	url
+}]
+				</pre></td>
+				<td>Get the list of files uploaded by given teacher</td>
 			</tr>
 <!-- 			<tr>
 				<td>/api/lecture/attendance</td>

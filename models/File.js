@@ -16,6 +16,9 @@ FileSchema.add({
 		required:true,
 		default:'not_set',
 		ref:'Teacher'
+	},
+	url:{
+		type: String
 	}
 });
 

@@ -15,7 +15,8 @@ APIRouter.get('/',function(req,res,next){
 APIRouter.get('/teacher/:teacherId/attendance',teacherAPI.startAttendance);
 APIRouter.get('/teacher/:teacherId/timetable', teacherAPI.getTimetable);
 APIRouter.post('/teacher/login',teacherAPI.login);
-APIRouter.post('/teacher/file-upload', teacherAPI.fileUpload);
+APIRouter.post('/teacher/:teacherId/file-upload', teacherAPI.fileUpload);
+APIRouter.get('/teacher/:teacherId/files', teacherAPI.findFiles);
 APIRouter.get('/teacher/:teacherId/courses', teacherAPI.findCourses);
 APIRouter.get('/teacher/:teacherId/sections', teacherAPI.findSections);
 

@@ -1,6 +1,8 @@
-const http=require('http');
+const https=require('https');
 const querystring=require('querystring');
 const async = require('async');
+const FormData=require('form-data');
+const fs=require('fs');
 
 var keystone=require('keystone');
 var Section=keystone.list('Section').model;
@@ -215,84 +217,109 @@ var teacherAPI={
 		
 	},
 	fileUpload:function(req, res, next){
-		// console.log('sending post request to mis');
-		//  	// Build the post string from an object
-		//  	var post_data = querystring.stringify({
-		//      	'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
-		//      	'output_format': 'json',
-		//      	'output_info': 'compiled_code',
-		//        'warning_level' : 'QUIET',
-		//        'js_code' : 'codestring'
-		//  	});
+		let file=req.files.file;
+		let teacherId=req.params.teacherId;
 
-		//  	// An object of options to indicate where to post to
-		//  	var post_options = {
-		//      	host: 'iut-files.mis.uz',
-		//      	port: '80',
-		//     	path: '/file-upload.php',
-		 //      	method: 'POST',
-		 //      	headers: {
-		 //          	'Content-Type': 'application/x-www-form-urlencoded',
-		 //          	'Content-Length': Buffer.byteLength(post_data)
-		 //      	}
-		 //  	};
+		if(!(file && file.originalname)){
+			return res.json({
+				result:'error',
+				message:'file was not given'
+			});
+		}
 
-		 //  	// Set up the request
-		 //  	var post_req = http.request(post_options, function(resp) {
-		 //    	resp.setEncoding('utf8');
-		 //      	resp.on('data', function (chunk) {
-		 //          	console.log('Response: ' + chunk);
-		 //          	res.end();
-		 //      	});
-		 //  	});
+		let extension=file.originalname.split('.').pop();
 
-		 //  	// post the data
-		 //  	post_req.write(post_data);
-		//  	post_req.end();
-		let b=req.body;
-		if(b && b.teacherId && b.filename){
-			let f = new File({
-				name:b.filename,
-				teacher:b.teacherId,
+		Teacher.findOne({teacherId}, '', (err, teacher)=>{
+			if(err) return next(err);
+			if(!(teacher && teacher._id)){
+				return res.json({
+					status:'error',
+					message:'teacher not found'
+				});
+			}
+
+			let newFile = new File({
+				name:file.originalname,
+				teacher:teacher._id
 			});
 
-			return res.json(f);
-		}else{
+			newFile.url='https://iut-files.mis.uz/files/iut-attendance/'+newFile._id+'.'+extension;
+
+			newFile.save((err, f)=>{
+				if(err) return next(err);
+				res.json({
+					status:'success',
+					message:'file informations are saved, now you should send this file to https://iut-files.mis.uz/file-upload.php with given filename',
+					filename:f._id+'.'+extension
+				});
+			});
+		});
+	},
+	findFiles:(req, res, next)=>{
+		const teacherId=req.params.teacherId||'';
+
+		Teacher.findOne({teacherId}, (err, teacher)=>{
+			File.find({teacher: teacher._id}, 'name url', (err, files)=>{
+				if(err) return next(err);
+				return res.json(files);
+			});
+		});
+	},
+	fileUploadWithRequest:function(req, res, next){
+		let b=req.body;
+		let file=req.files.file;
+
+		if(!(file && file.originalname)){
 			return res.json({
 				result:'error',
 				message:'all data is not provided'
 			});
 		}
 
-		function attendance(data){
-			console.log('requesting to iut-attendance...');
-			data = JSON.stringify(data);
-			const options = {
-			  	hostname: 'iut-attendance.herokuapp.com',
-			  	port: 443,
-			  	path: '/api/lecture/attendance',
-			  	method: 'POST',
-			  	headers: {
-			    	'Content-Type': 'application/json',
-			    	'Content-Length': data.length
-			  	}
-			}
-			const req = https.request(options, res => {
-			  	console.log(`statusCode: ${res.statusCode}`)
+		let f = new File({
+			name:file.originalname,
+			teacher:b.teacherId,
+		});
 
-			  	res.on('data', d => {
-			  		console.log('request to iut-attendance finished...');
-			    	process.stdout.write(d)
-			  	});
-			});
+		console.log('requesting to iut-files.mis.uz ...');
+		//return res.json(file);
+		data = new FormData();
+		//data.append('file', fs.createReadStream(file.path));
+		data.append('my_string', 'my_value');
 
-			req.on('error', error => {
-			  	console.error(error)
-			});
-
-			req.write(data)
-			req.end();
+		console.log('formData is ready...');
+		const options = {
+		  	hostname: 'iut-files.mis.uz',
+		  	path: '/file-upload.php',
+		  	method: 'POST'
 		}
+
+		const myReq = https.request(options);
+
+		data.pipe(myReq);
+
+		// 
+
+		myReq.on('error', error => {
+		  	console.error(error)
+		});
+
+		myReq.on('response', myRes => {
+		  	console.log(`statusCode: ${myRes.statusCode}`)
+
+		  	myRes.on('data', d => {
+		  		console.log('request to iut-files.mis.uz finished...');
+		    	process.stdout.write(d)
+		  	});
+
+		  	res.json({
+		  		status:'success',
+		  		message: 'file-uploaded'
+		  	});
+		});
+
+		//myReq.write(data);
+		myReq.end();
 	}
 }
 

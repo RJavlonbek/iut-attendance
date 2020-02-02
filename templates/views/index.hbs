@@ -174,7 +174,19 @@
 				<td>/api/survey/start</td>
 				<td>POST</td>
 				<td>{title:String, content:String, author:ObjectId}</td>
-				<td>{status, message, survey:{_id, title, content, student||teacher:ObjectId, createdAt}}</td>
+				<td><pre>
+{
+	status, 
+	message, 
+	survey:{
+		_id, 
+		title, 
+		content, 
+		student||teacher:ObjectId, 
+		createdAt
+	}
+}
+				</pre></td>
 				<td>Create new survey and returns survey data</td>
 			</tr>
 			<tr>
@@ -305,11 +317,14 @@
 					<td><pre>
 {
 	photo: Buffer,
+	width: Int,
+	height: Int,
 	students:[{
 		_id,
 		studentId,
 		firstname,
-		lastname
+		lastname,
+		attended: Boolean
 	}],
 	status,
 	message

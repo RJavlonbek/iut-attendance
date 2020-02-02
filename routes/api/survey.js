@@ -97,7 +97,7 @@ const surveyAPI={
 		}
 		
 		Survey.findByIdAndUpdate(surveyId, update, (err, survey)=>{
-			if(err) return next();
+			//if(err) return next();
 			if(!(survey && survey._id)){
 				return res.json({
 					status:'error',

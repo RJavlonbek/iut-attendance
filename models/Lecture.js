@@ -9,13 +9,9 @@ Lecture.add({
 		ref:'Section'
 	},
 	students:{
-		studentId:{
-			type:Types.TextArray
-		},
-		attended:{
-			type:Types.NumberArray,
-			default:0
-		}
+		type:Types.Relationship,
+		ref:'Student',
+		many:true
 	},
 	attendedStudents:{
 		type:Types.Relationship,

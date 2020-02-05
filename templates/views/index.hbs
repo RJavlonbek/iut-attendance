@@ -53,7 +53,23 @@
 				<td>/api/teacher/:teacherId/timetable</td>
 				<td>GET</td>
 				<td></td>
-				<td>o'sha mashxur response ;)</td>
+				<td><pre>
+[{
+	number: "001",
+	groups: [{
+		_id,
+		title: "CSE 17-01"
+	}],
+	course: {
+		_id: ObjectId,
+		title: "Int to Database"
+	},
+	lectures:[{
+		day: 2, (tuesday)
+		time: "12:30"
+	}]
+}]
+				</pre></td>
 				<td>Timetable for teacher</td>
 			</tr>
 			<tr>
@@ -100,6 +116,38 @@
 				</pre></td>
 				<td>STEP-1 of attendance; starts a new lecture which should be occured on current time; and returns a list of students those are supposed to attend this lecture; and id of new lecture</td>
 			</tr>
+
+			<tr>
+				<td>/api/teacher/:teacherId/attendance-report</td>
+				<td>GET</td>
+				<td><pre>
+{
+	lectureId: ObjectId,
+	excel: Boolean
+}
+				</pre></td>
+				<td>
+					If lectureId is given: 
+<pre>
+{
+	data:[
+		['u1710005', 0||1 ],
+		['u1710033', 0||1 ],
+		...
+	],
+	course: "Int to Database",
+	section: "001",
+	lecture: {lecture num}
+}
+</pre>
+				</td>
+				<td>
+					Attendance Report;
+					Returns excel file, if 'excel' field is true;<br>
+					'data' field stores arrays of studentId and attendance status
+				</td>
+			</tr>
+
 			<tr>
 				<td>/api/teacher/:teacherId/file-upload</td>
 				<td>POST</td>
@@ -316,7 +364,7 @@
 					</pre></td>
 					<td><pre>
 {
-	photo: Buffer,
+	photo: Base64ImageData,
 	width: Int,
 	height: Int,
 	students:[{

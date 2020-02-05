@@ -3,6 +3,7 @@ const querystring=require('querystring');
 const async = require('async');
 const FormData=require('form-data');
 const fs=require('fs');
+const XLSX = require('xlsx');
 
 var keystone=require('keystone');
 var Section=keystone.list('Section').model;
@@ -193,6 +194,69 @@ var teacherAPI={
 				});
 			}
 		});
+	},
+	getReport: (req, res, next)=>{
+		let aoa = [];
+		const {excel, lectureId} = req.query;
+		let jsonData=[{prop:'val', prop1: 'val1'},{prop:'val2', prop1: 'vall'}];
+
+		if(lectureId){
+			console.log('lecture id is given: '+lectureId);
+			Lecture.findById(req.query.lectureId, 'number students attendedStudents').populate({
+				path: 'students',
+				select: ['studentId']
+			}).populate({
+				path:'section',
+				select:['number'],
+				populate: {path: 'course', select: ['title']}
+			}).exec((err, lecture)=>{
+				if(!(lecture && lecture._id)){
+					return res.json({
+						status: 'error',
+						message: 'lecture not found'
+					});
+				}
+
+				lecture.students.map((student, i)=>{
+					let attended = (lecture.attendedStudents.indexOf(student._id) != -1);
+					aoa.push([
+						student.studentId,
+						attended ? 1 : 0
+					]);
+				});
+
+				if(excel){
+					// adding header
+					aoa.unshift(['Student ID', 'Lecture '+lecture.number]);
+
+					/* generate workbook */
+					var ws = XLSX.utils.aoa_to_sheet(aoa);
+					var wb = XLSX.utils.book_new();
+					XLSX.utils.book_append_sheet(wb, ws, lecture.section.course.title+' '+lecture.section.number);
+
+					/* generate buffer */
+					var buf = XLSX.write(wb, {type:'buffer', bookType:"xlsx"});
+
+					/* send to client */
+					res.set('Content-disposition', 'attachment; filename=' + 'report.xlsx');
+					return res.status(200).send(buf);
+				}else{
+					return res.json({
+						status:'success',
+						message: '',
+						data: aoa,
+						course: lecture.section.course.title,
+						section: lecture.section.number,
+						lecture: lecture.number
+					});
+				}
+			});
+		}else{
+			return res.json({
+				status:'error',
+				message:'lack of data'
+			});
+		}
 	},
 	findCourses:(req, res, next)=>{
 		const teacherId=req.params.teacherId||'';

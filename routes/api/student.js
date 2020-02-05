@@ -35,6 +35,46 @@ var studentAPI={
 			if(err) return next(err);
 			res.json(students);
 		});
+	},
+	currentAttendance:(req, res, next)=>{
+		const {studentId} = req.params;
+		Student.findOne({studentId}, '', (err, student)=>{
+			if(!(student && student._id)){
+				return res.json({
+					status: 'error',
+					message: 'student no found'
+				});
+			}
+
+			Lecture.findOne({}, {}, {
+				sort: {'created_at' : -1}
+			}).populate({
+				path:'section',
+				select:['number'],
+				populate:{
+					path:'course',
+					select:['title']
+				}
+			}).exec((err, lecture)=>{
+				if(!(lecture && lecture._id)){
+					return res.json({
+						status: 'error',
+						message: 'lecture not found'
+					});
+				}
+				let attended = (lecture.attendedStudents.indexOf(student._id) != 1)
+				res.json({
+					status: 'success',
+					message: '',
+					attended,
+					course: lecture.section.course.title,
+					section: lecture.section.number
+				});
+			});
+		});
+	},
+	getReport:(req, res, next)=>{
+		res.end();
 	}
 }
 

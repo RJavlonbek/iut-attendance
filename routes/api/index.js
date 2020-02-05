@@ -12,9 +12,10 @@ APIRouter.get('/',function(req,res,next){
 });
 
 //teacher api
-APIRouter.get('/teacher/:teacherId/attendance',teacherAPI.startAttendance);
+APIRouter.get('/teacher/:teacherId/attendance', teacherAPI.startAttendance);
+APIRouter.get('/teacher/:teacherId/attendance-report', teacherAPI.getReport);
 APIRouter.get('/teacher/:teacherId/timetable', teacherAPI.getTimetable);
-APIRouter.post('/teacher/login',teacherAPI.login);
+APIRouter.post('/teacher/login', teacherAPI.login);
 APIRouter.post('/teacher/:teacherId/file-upload', teacherAPI.fileUpload);
 APIRouter.get('/teacher/:teacherId/files', teacherAPI.findFiles);
 APIRouter.get('/teacher/:teacherId/courses', teacherAPI.findCourses);
@@ -22,6 +23,8 @@ APIRouter.get('/teacher/:teacherId/sections', teacherAPI.findSections);
 
 //student api
 APIRouter.post('/student/:studentId/attendance',studentAPI.checkAttendance);
+APIRouter.get('/student/:studentId/current-attendance', studentAPI.currentAttendance);
+APIRouter.get('/student/:studentId/attendance-report', studentAPI.getReport);
 APIRouter.get('/student/find', studentAPI.findStudents);
 
 // lecture && attendance

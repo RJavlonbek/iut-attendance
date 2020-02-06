@@ -62,7 +62,7 @@ var studentAPI={
 						message: 'lecture not found'
 					});
 				}
-				let attended = (lecture.attendedStudents.indexOf(student._id) != 1)
+				let attended = (lecture.attendedStudents.indexOf(student._id) != -1)
 				res.json({
 					status: 'success',
 					message: '',
@@ -74,8 +74,69 @@ var studentAPI={
 		});
 	},
 	getReport:(req, res, next)=>{
-		res.end();
+		const {studentId} = req.params;
+		Student.findOne({studentId}, (err, student)=>{
+			if(!(student && student._id)){
+				return res.json({
+					status: 'error',
+					message: 'student not found'
+				});
+			}
+
+			Section.find({groups: student.group}, 'number course').populate({
+				path:'course',
+				select:'title'
+			}).exec((err, sections)=>{
+				if(!(sections && sections.length)){
+					return res.json({
+						status: 'error',
+						message: 'no sections found'
+					});
+				}
+
+				let sectionIds=sections.map((s, i)=>s._id);
+				Lecture.find({
+					section: {$in: sectionIds}
+				}, 'number students attendedStudents section created_at', (err, lectures)=>{
+					if(!(lectures && lectures.length)){
+						return res.json({
+							status: 'error',
+							message: 'no lectures found'
+						});
+					}
+
+					sections = sections.map((s, i)=>{
+						let lecturesOfSection = lectures.filter((l)=>{
+							return l.section.toString() == s._id.toString();
+						}).map((l, lIndex)=>{
+							let d = new Date(l.created_at);
+							return {
+								number: l.number,
+								attended: (l.attendedStudents.indexOf(student._id) == -1) ? 0 : 1,
+								date: pad(d.getDay(), 2)+'.'+pad(d.getMonth()+1, 2)
+							}
+						});
+
+						return {
+							course: s.course,
+							_id: s._id,
+							number: s.number,
+							lectures: lecturesOfSection
+						};
+					});
+
+					res.json(sections);
+				});
+			});
+		});
+		//res.end();
 	}
+}
+
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
 }
 
 module.exports=studentAPI;

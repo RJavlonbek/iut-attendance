@@ -161,6 +161,7 @@
 				</pre></td>
 				<td>STEP 1 of FILE UPLOADING; stores file informations and returns new filename</td>
 			</tr>
+
 			<tr>
 				<td>https://iut-files.mis.uz/file-upload.php</td>
 				<td>POST</td>
@@ -287,6 +288,7 @@
 				</pre></td>
 				<td>API for vote up/down for a survey</td>
 			</tr>
+
 			<tr>
 				<td>/api/student/find</td>
 				<td>GET</td>
@@ -308,6 +310,50 @@
 }]
 				</pre></td>
 				<td>Get list of students according to given filters</td>
+			</tr>
+
+			<tr>
+				<td>/api/student/:studentId/current-attendance</td>
+				<td>GET</td>
+				<td><pre>
+{}
+				</pre></td>
+				<td><pre>
+{
+	status,
+	message,
+	attended: Boolean,
+	course: 'Intr to Database',
+	section: '001'
+}
+				</pre></td>
+				<td>Get attendance status of the student for current lecture (ongoing lecture)</td>
+			</tr>
+
+			<tr>
+				<td>/api/student/:studentId/attendance-report</td>
+				<td>GET</td>
+				<td><pre>
+{
+	excel: Boolean (not ready yet)
+}
+				</pre></td>
+				<td><pre>
+[{
+	_id (Section ID),
+	course:{
+		_id,
+		title
+	},
+	number: "001",
+	lectures:[{
+		number: {lecture num},
+		date: "dd.mm",
+		attended: 0||1
+	}]
+}]
+				</pre></td>
+				<td>Data about total attendance status of the student, for each course, each lecture</td>
 			</tr>
 
 			<tr>
@@ -359,7 +405,8 @@
 					<td><pre>
 {
 	photo: File(image),
-	lectureId: ObjectId
+	lectureId: ObjectId,
+	onlyImg: Boolean
 }
 					</pre></td>
 					<td><pre>
@@ -378,7 +425,10 @@
 	message
 }
 					</pre></td>
-					<td>2-STEP of attendance (lasts step). Detects all faces from given picture, recognizes all faces according to student faces. Marks them attended for given lecture. Draws boxes on each face and writes studentId's on them, and returns ready picture as buffer</td>
+					<td>
+						2-STEP of attendance (lasts step). Detects all faces from given picture, recognizes all faces according to student faces. Marks them attended for given lecture. Draws boxes on each face and writes studentId's on them, and returns ready picture as buffer<br>
+						- Returns image file, if 'onlyImg' field is truthy
+					</td>
 				</tr>
 			</tbody>
 		</table>

@@ -17,6 +17,10 @@ FileSchema.add({
 		default:'not_set',
 		ref:'Teacher'
 	},
+	course:{
+		type:Types.Relationship,
+		ref:'Course'
+	},
 	url:{
 		type: String
 	}

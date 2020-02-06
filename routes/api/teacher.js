@@ -283,6 +283,7 @@ var teacherAPI={
 	fileUpload:function(req, res, next){
 		let file=req.files.file;
 		let teacherId=req.params.teacherId;
+		const {courseId, title} = req.body;
 
 		if(!(file && file.originalname)){
 			return res.json({
@@ -293,18 +294,33 @@ var teacherAPI={
 
 		let extension=file.originalname.split('.').pop();
 
-		Teacher.findOne({teacherId}, '', (err, teacher)=>{
+		async.parallel({
+			course:(cb)=>{
+				Course.findById(courseId, '', cb);
+			},
+			teacher:(cb)=>{
+				Teacher.findOne({teacherId}, '', cb);
+			}
+		}, (err, results)=>{
 			if(err) return next(err);
+			const {teacher, course} = results;
 			if(!(teacher && teacher._id)){
 				return res.json({
 					status:'error',
 					message:'teacher not found'
 				});
 			}
+			if(!(course && course._id)){
+				return res.json({
+					status: 'error',
+					message: 'invalid courseId, course not found'
+				});
+			}
 
 			let newFile = new File({
-				name:file.originalname,
-				teacher:teacher._id
+				name: title || file.originalname,
+				teacher:teacher._id,
+				course: course._id
 			});
 
 			newFile.url='https://iut-files.mis.uz/files/iut-attendance/'+newFile._id+'.'+extension;
@@ -323,7 +339,10 @@ var teacherAPI={
 		const teacherId=req.params.teacherId||'';
 
 		Teacher.findOne({teacherId}, (err, teacher)=>{
-			File.find({teacher: teacher._id}, 'name url', (err, files)=>{
+			File.find({teacher: teacher._id}, 'name url').populate({
+				path: 'course',
+				select: ['title']
+			}).exec((err, files)=>{
 				if(err) return next(err);
 				return res.json(files);
 			});

@@ -151,7 +151,13 @@
 			<tr>
 				<td>/api/teacher/:teacherId/file-upload</td>
 				<td>POST</td>
-				<td>{file: File}</td>
+				<td><pre>
+{
+	file: File,
+	title: String,
+	courseId: ObjectId
+}					
+				</pre></td>
 				<td><pre>
 {
 	status,
@@ -189,7 +195,11 @@
 [{
 	_id,
 	name: "Original name",
-	url
+	url,
+	course:{
+		_id,
+		title
+	}
 }]
 				</pre></td>
 				<td>Get the list of files uploaded by given teacher</td>
@@ -217,7 +227,7 @@
 	message
 }
 				</pre></td>
-				<td>Gets the list of students who attended to given lecture</td>
+				<td>Gets the list of students who attended to given lecture (not used)</td>
 			</tr>
 			<tr>
 				<td>/api/survey/start</td>

@@ -115,7 +115,7 @@ var studentAPI={
 							return {
 								number: l.number,
 								attended: (l.attendedStudents.indexOf(student._id) == -1) ? 0 : 1,
-								date: pad(d.getDay(), 2)+'.'+pad(d.getMonth()+1, 2)
+								date: pad(d.getDate(), 2)+'.'+pad(d.getMonth()+1, 2)
 							}
 						});
 

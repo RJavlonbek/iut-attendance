@@ -60,6 +60,10 @@ Section.add({
 			label:'Starting time of first lecture (hh:mm)',
 			type:String,
 			dependsOn:{$gte:{lecturesPerWeek:1}}
+		},
+		room: {
+			type:String,
+			dependsOn:{$gte:{lecturesPerWeek:1}}
 		}
 	},
 	lectureTwo:{
@@ -92,6 +96,10 @@ Section.add({
 			label:'Starting time of second lecture (hh:mm)',
 			type:String,
 			dependsOn:{$gte:{lecturesPerWeek:2}}
+		},
+		room: {
+			type: String,
+			dependsOn: {$gte: {lecturesPerWeek: 2}}
 		}
 	}
 });

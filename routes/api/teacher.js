@@ -21,16 +21,16 @@ var teacherAPI={
 		Teacher.findOne({teacherId:teacherId},function(err,teacher){
 			if(err) return next(err);
 			if(!(teacher && teacher._id)){
-				res.json({
+				return res.json({
 					status:'error',
 					message:'Teacher not found ('+teacherId+')'
 				});
 			}
 
 			console.log('teacher found '+teacher.firstname+' '+teacher.lastname);
-			var now=new Date();
-			var currentDay=now.getDay();
-			var currenHour=now.getHours();
+			const now=new Date();
+			const currentDay=now.getDay(); // 0 to 6, (Sunday is 0)
+			const currenHour=now.getHours(); // 0 to 23
 			var regexHour='/^'+currenHour+'/';
 
 			// Section.findOne({
@@ -42,60 +42,170 @@ var teacherAPI={
 			// 		// 'lectureTwo.time':{$regex:regexHour}
 			// 	}]
 			// })
-			Section.findOne({}).populate({
-				path:'teacher',
-				match:{_id:teacher._id}
-			}).populate({
-				path:'course'
-			}).exec(function(err,section){
-				if(err) return next(err);
-				if(!(section && section._id)){
-					res.json({
+			Section.find({teacher: teacher._id}, 'lectureOne lectureTwo groups number teacher').populate({
+				path:'course',
+				select:['title']
+			}).exec(function(err,sections){
+				if(!(sections && sections.length)){
+					return res.json({
 						status:'error',
-						message:'No lectures found for teacher('+teacherId+')'
+						message:'No sections found for teacher('+teacherId+')'
 					});
 				}
 
-				console.log('section found '+section.course.title+'('+section.number+')');
-				Lecture.count({section:section._id,teacher:section.teacher._id},function(err,lecturesCount){ // counting lectures
-					if(err) return next(err);
-					console.log(lecturesCount+' lectures found for this section');
-					Student.find({group:{$in:section.groups}},function(err,students){ //finding students of this section
-						if(err) return next(err);
-						if(!(students && students.length)){
-							res.json({
-								status:'error',
-								message:'No students found',
-								result:students
-							});
-						}
+				console.log(sections.length+' sections found');
 
-						console.log(students.length+' students found');
-						//creating lecture
-						console.log('creating lecture');
-						var newLecture=new Lecture({
-							students:students.map((st, index)=>st._id),
-							section:section._id,
-							attendedStudents:[],
-							teacher:section.teacher._id,
-							number:lecturesCount+1
+				// find section that has the nearest lectureTime with currentTime
+				let nearestSection = {};
+				let dayDistance = 6;
+				let nearestDay = '';
+				let lecturesOfNearestDay=[];
+
+				sections.map((s, i)=>{
+					if(currentDay - s.lectureOne.day <= dayDistance){
+						dayDistance = currentDay - s.lectureOne.day;
+						nearestDay = s.lectureOne.day;
+					}
+					if(currentDay - s.lectureTwo.day <= dayDistance){
+						dayDistance = currentDay - s.lectureTwo.day;
+						nearestDay = s.lectureTwo.day;
+					}
+				});
+
+				console.log('nearestDay: '+nearestDay);
+
+				// getting lectures of nearest day
+				sections.map((s)=>{
+					let lecture='';
+					if(s.lectureOne.day == nearestDay){
+						lecture = s.lectureOne;
+					}
+					if(s.lectureTwo.day == nearestDay){
+						lecture = s.lectureTwo;
+					}
+
+					if(lecture){
+						lecturesOfNearestDay.push({
+							time: lecture.time,
+							section: s
 						});
-						
-						newLecture.save(function(err,newLect){
+					}
+				});
+				console.log(lecturesOfNearestDay.length+' lectures found for nearest day');
+
+				// sorting lectures
+				lecturesOfNearestDay.sort((l1, l2)=>{
+					let hour1 = l1.time.split(':')[0]/1;
+					let hour2 = l2.time.split(':')[0]/1;
+					if(hour1 < hour2){
+						return -1;
+					}else{
+						return 1;
+					}
+				});
+
+				if(currentDay == nearestDay){
+					// find the lecture that was started latest
+
+				}else{
+					// last lecture of that day, we will take
+					nearestSection = lecturesOfNearestDay[lecturesOfNearestDay.length - 1];
+				}
+
+				console.log('nearest section found...');
+				console.log(nearestSection);
+
+				var section = nearestSection.section;
+
+				Lecture.findOne({
+					section: section._id
+				}, 'students created_at attendedStudents number', {
+					$sort: {'created_at':-1}
+				}).populate({
+					path: 'students',
+					select: ['studentId', 'firstname', 'lastname']
+				}).exec((err, lecture)=>{
+					if(lecture && lecture._id){
+						return res.json({
+							status:'success',
+							message:'existing lecture',
+							students:lecture.students.map((s, i)=>{
+								return {
+									_id: s._id,
+									studentId: s.studentId,
+									firstname: s.firstname,
+									lastname: s.lastname
+								}
+							}),
+							section:{
+								_id: section._id,
+								number: section.number
+							},
+							course:{
+								_id: section.course._id,
+								title: section.course.title
+							},
+							lectureId:lecture._id
+						});
+					}
+
+					// create new lecture
+					Lecture.count({
+						section:section._id
+					}, (err, lecturesCount)=>{ // counting lectures
+						if(err) return next(err);
+						console.log(lecturesCount+' lectures found for this section');
+						Student.find({
+							group:{$in:section.groups}
+						}, 'studentId firstname lastname', (err,students)=>{ //finding students of this section
 							if(err) return next(err);
-							res.json({
-								status:'success',
-								message:'done',
-								students:students.map((st, i)=>st.studentId),
-								section:section.number,
-								course:section.course.title,
-								lectureId:newLect._id
+							// if(!(students && students.length)){
+							// 	return res.json({
+							// 		status:'error',
+							// 		message:'No students found',
+							// 		result:students
+							// 	});
+							// }
+
+							console.log(students.length+' students found');
+							console.log('creating lecture');
+							var newLecture=new Lecture({
+								students:students.map((st, index)=>st._id),
+								section:section._id,
+								attendedStudents:[],
+								teacher:section.teacher,
+								number:lecturesCount+1
+							});
+							
+							newLecture.save(function(err,newLect){
+								if(err) return next(err);
+								return res.json({
+									status:'success',
+									message:'new lecture',
+									students:students.map((s, i)=>{
+										return{
+											_id: s._id,
+											studentId: s.studentId,
+											firstname: s.firstname,
+											lastname: s.lastname
+										}
+									}),
+									section:{
+										_id: section._id,
+										number: section.number
+									},
+									course:{
+										_id: section.course._id,
+										title: section.course.title
+									},
+									lectureId:newLect._id
+								});
 							});
 						});
 					});
 				});
 			});
-		})
+		});
 	},
 	login:function(req,res,next){
 		var b=req.body;

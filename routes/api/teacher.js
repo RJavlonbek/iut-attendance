@@ -113,7 +113,7 @@ var teacherAPI={
 				}
 
 				console.log('nearest section found...');
-				console.log(nearestSection);
+				//console.log(nearestSection);
 
 				var section = nearestSection.section;
 

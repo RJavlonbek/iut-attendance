@@ -436,7 +436,12 @@ var teacherAPI={
 	fileUpload:function(req, res, next){
 		let file=req.files.file;
 		let teacherId=req.params.teacherId;
-		const {courseId, title} = req.body;
+		const {title} = req.body;
+		let {courseId} = req.body;
+		
+		if(courseId.length==26){
+			courseId=courseId.substring(1, 25);
+		}
 
 		if(!(file && file.originalname)){
 			return res.json({

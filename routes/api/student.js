@@ -46,7 +46,9 @@ var studentAPI={
 				});
 			}
 
-			Lecture.findOne({}, {}, {
+			Lecture.findOne({
+				students: student._id
+			}, {}, {
 				sort: {'created_at' : -1}
 			}).populate({
 				path:'section',
@@ -59,7 +61,7 @@ var studentAPI={
 				if(!(lecture && lecture._id)){
 					return res.json({
 						status: 'error',
-						message: 'lecture not found'
+						message: 'lecture that this student attended to, not found'
 					});
 				}
 				let attended = (lecture.attendedStudents.indexOf(student._id) != -1)

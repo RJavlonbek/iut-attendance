@@ -273,8 +273,18 @@ var teacherAPI={
 	getTimetable:function(req, res, next){
 		const teacherId=req.params.teacherId||'';
 		console.log('getting timetable for instructor '+teacherId);
-		Teacher.findOne({teacherId},'_id',(err, teacher)=>{
+
+		async.parallel({
+			student: (cb)=>{
+				Student.findOne({studentId: teacherId}, '_id group', cb);
+			},
+			teacher: (cb)=>{
+				Teacher.findOne({teacherId},'_id firstname lastname', cb);
+			}
+		}, (err, results)=>{
 			if(err) return next(err);
+			const {teacher, student} = results;
+
 			if(teacher && teacher._id){
 				Section.find({
 					teacher:teacher._id
@@ -292,7 +302,40 @@ var teacherAPI={
 							number: section.number,
 							groups: section.groups,
 							course: section.course,
-							lectures:[section.lectureOne, section.lectureTwo]
+							lectures:[section.lectureOne, section.lectureTwo],
+							teacher: {
+								firstname: teacher.firstname,
+								lastname: teacher.lastname
+							}
+						}
+					});
+					res.json(sections);
+				});
+			}else if(student && student._id){
+				Section.find({
+					groups:student.group
+				},'number lectureOne lectureTwo').populate({
+					path:'groups',
+					select:['title']
+				}).populate({
+					path:'course',
+					select:['title']
+				}).populate({
+					path:'teacher',
+					select: ['firstname', 'lastname']
+				}).exec((err, sections)=>{
+					if(err) return next(err);
+					let lectures=[];
+					sections=sections.map((section, index)=>{
+						return {
+							number: section.number,
+							groups: section.groups,
+							course: section.course,
+							lectures:[section.lectureOne, section.lectureTwo],
+							teacher: {
+								firstname: section.teacher.firstname,
+								lastname: section.teacher.lastname
+							}
 						}
 					});
 					res.json(sections);
@@ -300,7 +343,7 @@ var teacherAPI={
 			}else{
 				res.json({
 					result:'error',
-					message:'teacher was not found for given id '+teacherId
+					message:'user was not found for given id '+teacherId
 				});
 			}
 		});

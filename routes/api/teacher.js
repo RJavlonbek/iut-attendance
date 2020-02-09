@@ -436,11 +436,14 @@ var teacherAPI={
 	fileUpload:function(req, res, next){
 		let file=req.files.file;
 		let teacherId=req.params.teacherId;
-		const {title} = req.body;
-		let {courseId} = req.body;
+		let {courseId, title} = req.body;
 		
+		// eliminating double quotes
 		if(courseId.length==26){
 			courseId=courseId.substring(1, 25);
+		}
+		if(title[0] == '"' && title[title.length - 1] == '"'){
+			title = title.substring(1, title.length - 1);
 		}
 
 		if(!(file && file.originalname)){
@@ -451,6 +454,7 @@ var teacherAPI={
 		}
 
 		let extension=file.originalname.split('.').pop();
+		console.log('extension: '+extension);
 
 		async.parallel({
 			course:(cb)=>{

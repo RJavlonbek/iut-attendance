@@ -66,7 +66,8 @@
 	},
 	lectures:[{
 		day: 2, (tuesday)
-		time: "12:30"
+		time: "12:30",
+		room: "B209"
 	}],
 	teacher:{
 		firstname,
@@ -137,7 +138,10 @@
 	message: 'new lecture'||'existing lecture'
 }
 				</pre></td>
-				<td>STEP-1 of attendance; starts a new lecture which should be occured on current time; and returns a list of students those are supposed to attend this lecture; and id of new lecture</td>
+				<td>
+					STEP-1 of attendance; starts a new lecture which should be occured on current time; and returns a list of students those are supposed to attend this lecture; and id of new lecture;<br>
+					If there is no currently oncoing lecture, it returns details of the lecture which was last finished till now<br>
+				</td>
 			</tr>
 
 			<tr>

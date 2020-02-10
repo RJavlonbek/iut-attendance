@@ -30,8 +30,9 @@ var teacherAPI={
 			console.log('teacher found '+teacher.firstname+' '+teacher.lastname);
 			const now=new Date();
 			const currentDay=now.getDay(); // 0 to 6, (Sunday is 0)
-			const currenHour=now.getHours(); // 0 to 23
-			var regexHour='/^'+currenHour+'/';
+			const currentHour=now.getHours(); // 0 to 23
+			const currentMin = now.getMinutes(); // 0 to 59
+			var regexHour='/^'+currentHour+'/';
 
 			// Section.findOne({
 			// 	$or:[{
@@ -45,6 +46,9 @@ var teacherAPI={
 			Section.find({teacher: teacher._id}, 'lectureOne lectureTwo groups number teacher').populate({
 				path:'course',
 				select:['title']
+			}).populate({
+				path: 'groups',
+				select: 'title'
 			}).exec(function(err,sections){
 				if(!(sections && sections.length)){
 					return res.json({
@@ -61,16 +65,24 @@ var teacherAPI={
 				let nearestDay = '';
 				let lecturesOfNearestDay=[];
 
-				sections.map((s, i)=>{
-					if(currentDay - s.lectureOne.day <= dayDistance){
-						dayDistance = currentDay - s.lectureOne.day;
-						nearestDay = s.lectureOne.day;
+				// much powerful algorithm needed here
+				let i=currentDay;
+				let testCount = 0;
+				while(!nearestDay || testCount<=7){
+					if(i < 0){ i+=6; }
+					if(sections.filter((s)=>{
+						if(s.lectureOne.day == i || s.lectureTwo.day == i){ 
+							return true; 
+						}else{
+							return false;
+						}
+					}).length){
+						nearestDay = i;
+					}else{
+						i--;
 					}
-					if(currentDay - s.lectureTwo.day <= dayDistance){
-						dayDistance = currentDay - s.lectureTwo.day;
-						nearestDay = s.lectureTwo.day;
-					}
-				});
+					testCount++;
+				}
 
 				console.log('nearestDay: '+nearestDay);
 
@@ -87,7 +99,9 @@ var teacherAPI={
 					if(lecture){
 						lecturesOfNearestDay.push({
 							time: lecture.time,
-							section: s
+							day: lecture.day,
+							section: s,
+							room: lecture.room
 						});
 					}
 				});
@@ -107,10 +121,29 @@ var teacherAPI={
 				if(currentDay == nearestDay){
 					// find the lecture that was started latest
 
-				}else{
-					// last lecture of that day, we will take
-					nearestSection = lecturesOfNearestDay[lecturesOfNearestDay.length - 1];
+					console.log('finding lecture for today');
+					console.log('current hour: '+currentHour);
+					console.log('current minute: '+currentMin);
+
+					let lecturesOfTodayTillNow = lecturesOfNearestDay.filter((l)=>{
+						let hour = l.time.split(':')[0]/1;
+						let min = l.time.split(':')[1]/1;
+						if(hour <= currentHour && min <= (currentHour - hour)*60 + currentMin){
+							return true;
+						}else{
+							return false;
+						}
+					});
+					console.log(lecturesOfTodayTillNow.length+' lectures found for today till now');
+
+					if(lecturesOfTodayTillNow.length){
+						lecturesOfNearestDay = lecturesOfTodayTillNow;
+					}
 				}
+
+
+				// last lecture of that day, we will take
+				nearestSection = lecturesOfNearestDay[lecturesOfNearestDay.length - 1];
 
 				console.log('nearest section found...');
 				//console.log(nearestSection);
@@ -145,7 +178,17 @@ var teacherAPI={
 								_id: section.course._id,
 								title: section.course.title
 							},
-							lectureId:lecture._id
+							lectureId:lecture._id,
+							number: lecture.number,
+							groups: section.groups.map((g, i)=>{
+								return {
+									_id: g._id,
+									title: g.title
+								}
+							}),
+							room: nearestSection.room,
+							day: nearestSection.day,
+							time: nearestSection.time
 						});
 					}
 
@@ -198,7 +241,17 @@ var teacherAPI={
 										_id: section.course._id,
 										title: section.course.title
 									},
-									lectureId:newLect._id
+									lectureId:newLect._id,
+									number: newLect.number,
+									groups: section.groups.map((g, i)=>{
+										return {
+											_id: g._id,
+											title: g.title
+										}
+									}),
+									room: nearestSection.room,
+									day: nearestSection.day,
+									time: nearestSection.time
 								});
 							});
 						});

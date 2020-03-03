@@ -408,6 +408,8 @@ var teacherAPI={
 
 		if(lectureId){
 			console.log('lecture id is given: '+lectureId);
+
+			
 			Lecture.findById(req.query.lectureId, 'number students attendedStudents').populate({
 				path: 'students',
 				select: ['studentId']
@@ -427,7 +429,7 @@ var teacherAPI={
 					let attended = (lecture.attendedStudents.indexOf(student._id) != -1);
 					aoa.push([
 						student.studentId,
-						attended ? 1 : 0
+						attended ? 'P' : 'A'
 					]);
 				});
 
@@ -444,7 +446,8 @@ var teacherAPI={
 					var buf = XLSX.write(wb, {type:'buffer', bookType:"xlsx"});
 
 					/* send to client */
-					res.set('Content-disposition', 'attachment; filename=' + 'report.xlsx');
+					let filename = lecture.section.course.title.split(' ').map((part, i)=>part[0]).join('')+'-'+lecture.section.number+'.xlsx';
+					res.set('Content-disposition', 'attachment; filename=' + filename);
 					return res.status(200).send(buf);
 				}else{
 					return res.json({

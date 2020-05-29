@@ -284,14 +284,17 @@ var teacherAPI={
 			if(err) return next(err);
 			let response={};
 			let user={};
+			let teacherId = '';
 			if(results.teacher && results.teacher._id){
 				response.userType='teacher';
 				user=results.teacher;
+				teacherId = user.teacherId;
 			}else if(results.student && results.student._id){
 				response.userType='student';
 				user=results.student;
+				teacherId = user.studentId;
 			}else{
-				res.json({
+				return res.json({
 					status:'error',
 					message:'user not found'
 				});
@@ -299,7 +302,7 @@ var teacherAPI={
 
 			response.user={
 				_id:user._id,
-				teacherId: user.studentId,
+				teacherId,
 				firstname: user.firstname,
 				lastname: user.lastname
 			}
@@ -314,7 +317,7 @@ var teacherAPI={
 							message:'signed in'
 						});
 					}else{
-						res.json({
+						return res.json({
 							status:'error',
 							message:'incorrect credentials'
 						});

@@ -37,20 +37,20 @@ exports = module.exports = function (app) {
 	// Views
 	app.get('/', routes.views.index);
 	app.all('/contact', routes.views.contact);
-	app.use('/api',require('./api'));
+	app.use('/api', require('./api'));
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
 
 	//handling error
-	app.use(function(err, req, res, next) {
+	app.use(function (err, req, res, next) {
 		// set locals, only providing error in development
 		res.locals.message = err.message;
 		res.locals.error = keystone.get('env') === 'development' ? err : {};
-		console.log('Error: ',err.message);
+		console.log('Error: ', err);
 		return res.json({
-			status:'error',
-			message:err.message
+			status: 'error',
+			message: err
 		});
 	});
 

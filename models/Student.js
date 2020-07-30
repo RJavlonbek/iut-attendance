@@ -39,6 +39,10 @@ Student.add({
 		min: 4,
 		rejectCommon: false,
 	},
+	status: {
+		type: Number,
+		default: 0  // 0 - Not attended (default) 1 - Attended 
+	},
 	token: {
 		type: String,
 		default: "",

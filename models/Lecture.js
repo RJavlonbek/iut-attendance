@@ -1,35 +1,35 @@
-var keystone=require('keystone');
-var Types=keystone.Field.Types;
+var keystone = require('keystone');
+var Types = keystone.Field.Types;
 
-var Lecture=new keystone.List('Lecture');
+var Lecture = new keystone.List('Lecture');
 
 Lecture.add({
-	section:{
-		type:Types.Relationship,
-		ref:'Section'
+	section: {
+		type: Types.Relationship,
+		ref: 'Section'
 	},
-	students:{
-		type:Types.Relationship,
-		ref:'Student',
-		many:true
+	students: {
+		type: Types.Relationship,
+		ref: 'Student',
+		many: true
 	},
-	attendedStudents:{
-		type:Types.Relationship,
-		ref:'Student',
-		many:true
+	attendedStudents: {
+		type: Types.Relationship,
+		ref: 'Student',
+		many: true
 	},
-	teacher:{
-		type:Types.Relationship,
-		ref:'Teacher'
+	teacher: {
+		type: Types.Relationship,
+		ref: 'Teacher'
 	},
-	number:{
-		type:Number
+	number: {
+		type: Number
 	},
-	created_at:{
+	created_at: {
 		type: Date,
-		default:Date.now
+		default: Date.now
 	}
 });
 
-Lecture.defaultColumns='number';
+Lecture.defaultColumns = 'number';
 Lecture.register();

@@ -1,7 +1,7 @@
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("path/to/code-sys-firebaseKey.json");
+var serviceAccount = require("./code-sys-firebaseKey.json");
 
 const notification_options = {
     priority: "high",

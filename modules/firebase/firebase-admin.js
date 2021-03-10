@@ -46,6 +46,6 @@ const sendNotificationOnAttendance = (token, attendanceStatus) => {
     });
 }
 
-module.exports = firebaseAdmin = admin;
+module.exports.firebaseAdmin = admin;
 module.exports.sendNotificationOnAttendance = sendNotificationOnAttendance;
 module.exports.notificationOptions = notification_options;

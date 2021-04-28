@@ -33,7 +33,7 @@ var teacherAPI = {
 			);
 			const now = new Date();
 			const currentDay = now.getDay(); // 0 to 6, (Sunday is 0)
-			const currentHour = now.getHours(); // 0 to 23
+			const currentHour = (now.getHours() + 5) % 24; // 0 to 23
 			const currentMin = now.getMinutes(); // 0 to 59
 			var regexHour = "/^" + currentHour + "/";
 

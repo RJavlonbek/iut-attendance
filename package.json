@@ -14,7 +14,7 @@
     "form-data": "^3.0.0",
     "handlebars": "^4.5.3",
     "keystone": "^4.2.1",
-    "lodash": "^4.13.1",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "xlsx": "^0.15.5"
   },

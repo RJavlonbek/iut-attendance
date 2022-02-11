@@ -8,7 +8,7 @@
     "connect-mongo": "^2.0.3",
     "connect-mongodb-session": "^2.0.4",
     "dotenv": "4.0.0",
-    "express-handlebars": "3.0.0",
+    "express-handlebars": "5.3.1",
     "express-session": "^1.15.6",
     "firebase-admin": "^9.0.0",
     "form-data": "^3.0.0",
